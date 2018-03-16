@@ -1,0 +1,39 @@
+.spcUpgradeMain  {
+	background-color: rgb(39, 39, 52); 
+	width: 100%; 
+	border-radius: 2px;
+}
+
+.spcTitle {
+	padding-top: 10px;
+	margin: 0 13px 0 14px;
+	text-align: center;
+	font-size: 50px;
+	color: #2ecc71;
+}
+
+.spcSmallTitle {
+	text-transform: uppercase;
+	font-weight: 800;
+	color: #FFCD00;
+	font-size: 20px;
+	text-align: center;
+	margin-top: 5px;
+	padding: 0px 0px 5px 0px;
+}
+
+.spcmediumbutton {
+	display: inline-block;
+	background-color: #6FCC33;
+	color: white;
+	text-align: center;
+	padding: 18px 0;
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-top: 10px;
+	width: 15%;
+	font-size: 28px;
+	font-weight: 700;
+	text-transform: uppercase;
+	border-radius: 10px;
+}

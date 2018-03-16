@@ -1,0 +1,49 @@
+{
+  "name": "Skinhub Profitability Calculator (SPC)",
+  "short_name":"SPC",
+  "version": "0.0.2",
+  "manifest_version": 2,
+  "description": "The only statistics collector / testing tool for skinhub.com cases. Besides this, luck is your best friend.",
+  "homepage_url": "http://haifisch.vip",
+  "icons": {
+    "16": "icons/16.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "browser_action": {
+    "default_icon": {
+      "32":"icons/if_four-leaved_shamrock_lucky_676765.png"
+    },
+    "default_title":"SPC",
+    "default_popup":"popup.html" 
+  },
+  "default_locale": "en",
+  "permissions": [
+    "https://skinhub.com/cases/*",
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://skinhub.com/cases/*"
+      ],
+      "js": [
+        "src/inject/inject.js", "src/inject/html2canvas.min.js"
+      ],
+      "css": [
+        "src/css/spc.css"
+      ]
+    },
+    {
+      "matches": [
+        "https://skinhub.com/upgrade"
+      ],
+      "js": [
+        "src/inject/upgrader.js"
+      ],
+      "css": [
+        "src/css/upgrader.css"
+      ]
+    }
+  ]
+}

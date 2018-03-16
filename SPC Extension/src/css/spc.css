@@ -1,0 +1,87 @@
+.html2canvas-container { width: 3000px !important; height: 3000px !important; }
+
+.spcbutton {
+	background-color: #6FCC33;
+	text-align: center;
+	display: block;
+	height: 40px;
+	width: 100%;
+	font-size: 30px;
+	font-weight: 700;
+	text-transform: uppercase;
+	margin: 0px 0px 0px 0px;
+	padding: 6px 0px 0px 0px;
+}
+
+.spcsmallbutton {
+	text-align: center;
+	display: inline-block;
+	height: 40px;
+	width: 77.3333px;
+	font-size: 28px;
+	font-weight: 700;
+	text-transform: uppercase;
+	margin: 0px;
+	padding: 6px 0px 0px 0px;
+}
+
+.spcsmallbutton:active {
+	background-color: grey;
+}
+
+.spcbtnholder {
+	width: 232px;
+	height: 40px;
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
+}
+
+.spcmediumbutton {
+	background-color: #6FCC33;
+	text-align: center;
+	display: inline-block;
+	height: 40px;
+	width: 50%;
+	font-size: 28px;
+	font-weight: 700;
+	text-transform: uppercase;
+	margin: 0px 0px 0px 0px;
+	padding: 6px 0px 0px 0px;
+
+}
+
+.spctitle {
+	text-align: center;
+	font-weight: 800;
+	font-size: 20px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	background-color: #1A1826;
+	color: #2ecc71;
+	height: 40px;
+}
+
+.spcsmalltitle {
+	text-transform: uppercase;
+	font-weight: 800;
+	color: #FFCD00;
+	font-size: 11px;
+	text-align: center;
+	padding: 0px 0px 5px 0px;
+}
+
+.spclabel {
+	font-weight: 800;
+	font-size: 15px;
+	padding-top: 7px;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+.spcmain {
+	background-color: #4C4B59;
+	border: 1px solid #4C4B59;
+	border-radius: 2px;
+	margin: 0;
+	width: auto;
+}

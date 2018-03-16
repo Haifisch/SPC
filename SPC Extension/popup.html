@@ -1,0 +1,75 @@
+<html>
+<head>
+	<style type="text/css">
+	body {
+   		width:360px;
+   		height:150px;
+   		background-color: #4C4B59;
+   		text-align: center;
+   	}
+   	.titlecontainer {
+   		background-color: #1A1826;
+   		height: 45px;
+   	}
+   	.title {
+   		color: white;
+   		font-size: 32px;
+		text-transform: uppercase;
+		color: #2ecc71;
+   	}
+   	.total {
+   		color: white;
+		text-transform: uppercase;
+   		font-size: 15px;
+   		font-weight: 800px;
+   		margin: 5px;
+   	}
+	.spctitle {
+		text-transform: uppercase;
+		text-align: center;
+		font-weight: 800;
+		font-size: 20px;
+		color: #FFCD00;
+   		margin: 0px;
+	}
+	ul.share-buttons{
+  list-style: none;
+  padding: 0;
+}
+
+ul.share-buttons li{
+  display: inline;
+}
+
+ul.share-buttons .sr-only{
+  position: absolute;
+  clip: rect(1px 1px 1px 1px);
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 0;
+  border: 0;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+}
+
+ul.share-buttons img{
+  width: 32px;
+}
+	</style>
+</head>
+<body>
+	<div class="titlecontainer">
+		<h1 class="title">&#9752; SPC &#9752;</h1>
+	</div>
+	<h1 class="spctitle">Lifetime stats</h1>
+	<div class="data">
+		<h1 id="totalProfit" class="total">theo. profit == </h1> 
+		<h1 id="totalSpent" class="total">theo. spent == </h1> 
+		<h1 id="totalOpened" class="total">opened cases == </h1> 
+		<ul class="share-buttons">
+  <li><a href="https://twitter.com/intent/tweet?source=https%3A%2F%2Fspc.haifisch.vip&text=SPC%20Data%20Hub:%20https%3A%2F%2Fspc.haifisch.vip&via=xvxPabloEscoxvx" target="_blank" id="shareBtn" title="Tweet"><img alt="Tweet" src="https://simplesharingbuttons.com/images/social_flat_rounded_rects_svg/Twitter.svg" /></a></li>
+</ul>
+	</div>
+	<script src="popup.js"></script>
+</body>
+</html>
