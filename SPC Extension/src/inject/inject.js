@@ -2,6 +2,7 @@
  *  Name: Skinhub Profitability Calculator (SPC)
  *  Author: Dylan "Haifisch" Laws 
  *  Description: Use this on Skinhub.com to calculate the profitability of cases using the "free test spin" 
+ *  This is all really hacky. It's a JS extension, what else would you expect?
  */
 
 var gCaseName = "";
@@ -67,15 +68,7 @@ function exportToCsv(filename, rows) {
     }
 }
 
-function exportToJSON(exportName, exportObj){
-    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj, null, 2));
-    var downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", exportName);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
-}
-// sets the cases to open per test spin to the max available
+// sets the cases to open per test spin to 5x
 function set_max_open() {
     var selector = document.getElementsByClassName("ember-view number-selector visible")[0];
     var subsel = selector.children[1];
@@ -120,13 +113,6 @@ function get_case_name() {
     var casenameHolder = document.getElementsByClassName("ember-view normal-case");
     gCaseImage = casenameHolder[0].getElementsByTagName("img")[0].src;
     return casenameHolder[0].getElementsByClassName("title")[0].innerHTML;
-}
-
-// calculate ROI
-function calc_roi(profit, cost) {
-    var net = (profit - cost);
-    var roi = (net/cost)*100;
-    return Math.round(roi);
 }
 
 // calculate win rate 
@@ -342,45 +328,15 @@ function run_spins() {
     }, 9000);
 }
 
-// test 5 cases
-function run_5() {
-    if (gSPCIsRunning) { console.log("[SPC] %calready running tests!", "color:red;"); return; }
-    gRunTarget = 1;
-    run_spins();
+function SPCForceStop() {
+    gRunTarget = gRunCount + 1;
+    console.log("[SPC] Stopping at "+gRunTarget);
 }
 
-// test 10 cases
-function run_10() {
+function doRuns(runTargetNumber) {
     if (gSPCIsRunning) { console.log("[SPC] %calready running tests!", "color:red;"); return; }
-    gRunTarget = 2; 
-    run_spins();
-}
-
-// test 25 cases
-function run_25() {
-    if (gSPCIsRunning) { console.log("[SPC] %calready running tests!", "color:red;"); return; }
-    gRunTarget = 5; 
-    run_spins();
-}
-
-// test 50 cases
-function run_50() {
-    if (gSPCIsRunning) { console.log("[SPC] %calready running tests!", "color:red;"); return; }
-    gRunTarget = 10; 
-    run_spins();
-}
-
-// test 100 cases
-function run_100() {
-    if (gSPCIsRunning) { console.log("[SPC] %calready running tests!", "color:red;"); return; }
-    gRunTarget = 20; 
-    run_spins();
-}
-
-// test 1000 cases (not in UI yet)
-function run_1000() {
-    if (gSPCIsRunning) { console.log("[SPC] %calready running tests!", "color:red;"); return; }
-    gRunTarget = 200; 
+    gRunTarget = runTargetNumber;
+    gRunCount = 0;
     run_spins();
 }
 
@@ -431,31 +387,41 @@ function setup_sidebar() {
     run5.innerHTML = "5x";
     run5.className = "spcsmallbutton";
     run5.style.backgroundColor = "#4469FF";
-    run5.onclick = run_5;
+    run5.onclick = function () {
+        doRuns(5);
+    };
     // test 10 cases 
     var run10 = document.createElement("a");
     run10.innerHTML = "10x";
     run10.className = "spcsmallbutton";
     run10.style.backgroundColor = "#8847FF";
-    run10.onclick = run_10;
+    run10.onclick = function () {
+        doRuns(10);
+    };
     // test 25 cases 
     var run25 = document.createElement("a");
     run25.innerHTML = "25x";
     run25.className = "spcsmallbutton";
     run25.style.backgroundColor = "#D139E3";
-    run25.onclick = run_25;
+    run25.onclick = function () {
+        doRuns(25);
+    };
     // test 50 cases 
     var run50 = document.createElement("a");
     run50.innerHTML = "50x";
     run50.style.backgroundColor = "#E94C4F";
     run50.className = "spcmediumbutton";
-    run50.onclick = run_50;
+    run50.onclick = function () {
+        doRuns(50);
+    };
     // test 100 cases 
     var run100 = document.createElement("a");
     run100.innerHTML = "100x";
     run100.className = "spcmediumbutton";
     run100.style.backgroundColor = "#FFCD00";
-    run100.onclick = run_100;
+    run100.onclick = function () {
+        doRuns(100);
+    };
     // export csv data
     var spcExportCSVBtn = document.createElement("a");
     spcExportCSVBtn.className = "spcbutton";
@@ -564,6 +530,8 @@ function setup_sidebar() {
     console.log("[SPC] syncing lifetime stats"); 
     sync_lifetime_stats();
 }
+
+// HTML2Canvas seems really messy, it tends to break animations after using it.
 function testExportPNG() {
     html2canvas(document.querySelector(".spcStatsDiv"),  {
                 foreignObjectRendering:true,
@@ -583,12 +551,7 @@ chrome.extension.sendMessage({}, function(response) {
 	var readyStateCheckInterval = setInterval(function() {
     	if (document.readyState === "complete") {
     		clearInterval(readyStateCheckInterval);
-    		console.log("[SPC] extension injected!");
-            console.log("[SPC] Skinhub Profitability Calculator v1.0");
-            console.log("[SPC] written by Haifisch (haifisch@hbang.ws)");
-            console.log("%c!!! GAMBLE WITH CARE !!!", "color:red;");
-            console.log("SPC makes no gaurantee of profit.\nSkinhub is high risk vs high reward just like any other CS:GO skin website.");
-            console.log("%c!!! GAMBLE WITH CARE !!!", "color:red;");
+    		spc_welcome();
             setTimeout(function () {
                 setup_sidebar();
             }, 1000);
