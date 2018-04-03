@@ -12,6 +12,13 @@
 	margin-bottom: 10px;
 }
 
+.spcUpgradeRunning {
+	background-color: rgb(39, 39, 52); 
+	width: 100%; 
+	border-radius: 2px;
+	margin-bottom: 10px;
+}
+
 .spcTitle {
 	padding-top: 10px;
 	margin: 0 13px 0 14px;
@@ -40,6 +47,7 @@
 	margin-right: 10px;
 	margin-top: 10px;
 	width: 15%;
+	height: 30%;
 	font-size: 28px;
 	font-weight: 700;
 	text-transform: uppercase;
@@ -59,4 +67,33 @@
 	font-weight: 700;
 	text-transform: uppercase;
 	border-radius: 10px;
+}
+
+
+/* Greetz https://www.w3schools.com/howto/howto_css_loader.asp */
+.loader {
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 10px;
+	border: 16px solid #f3f3f3;
+	border-radius: 50%;
+	border-top: 16px solid #8847FF;
+	border-right: 16px solid #D139E3;
+	border-bottom: 16px solid #E94C4F;
+	border-left: 16px solid #FFCD00;
+	width: 120px;
+	height: 120px;
+	-webkit-animation: spin 2s linear infinite;
+	animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

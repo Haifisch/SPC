@@ -10,12 +10,36 @@ var gLosses = 0;
 var gRunTarget = 0;
 var gRunCount = 0;
 var	gSPCIsRunning = false;
+var gRunningWinRate = 0;
 var gSpent = 0;
 var gProfit = 0;
 var gBigDataContainer = [];
 var gBigData = [];
+var gIsShowingResults = false;
 // performance timing
 var runTimeA, runTimeB = 0;
+
+// Greetz https://gist.github.com/jasonmacgowan/4272811
+var simplify = function (numerator, denominator){
+  /*
+    simplify() takes two numbers and returns a string with a simplified fraction.
+    It's not dummy proof though; you put garbage in and you'll get garbage out.
+  */
+    var a = [];
+	for(var i=2; i<=denominator; i++){
+		if(!(denominator % i)){
+			a.push(i);
+		}
+	}
+	for(var s=a.length;s>=0;s=s-1){
+		if(!(numerator % a[s-1])){
+			var common = a[s-1];
+			break;
+		}
+	}
+	return numerator/common+":"+denominator/common;
+};
+
 
 // export to json from button
 function doExportJSON() {
@@ -54,14 +78,19 @@ function print_report(wins, losses, percentage) {
 	var balance = getBetBalance();
 	var upgraded = getUpgradeToPrice();
 	var timePassed = performance.now();
+	gRunningWinRate = ((wins/(wins+losses))*100).toFixed(2);
 	console.log("[===============("+gRunCount+"/"+gRunTarget+")===============]");
 	console.log("[SPC] Runtime === "+millisToMinutesAndSeconds((timePassed - runTimeA)));
 	console.log("[SPC] Ideal ROI "+calc_roi(upgraded, balance)+"%");
 	console.log("[SPC] Skinhub percentage "+percentage+"%");
 	console.log("[SPC] Wins === "+wins+" ~~~ Losses === "+losses);
 	console.log("[SPC] Spent === "+gSpent.toFixed(2)+" ~~~ Profit === "+gProfit.toFixed(2));
-	console.log("[SPC] Running ROI "+calc_roi(gProfit, gSpent)+"%");
-	console.log("[SPC] Running winrate "+((wins/(wins+losses))*100).toFixed(2)+"%");
+	console.log("[SPC] Running ROI === "+calc_roi(gProfit, gSpent)+"%");
+	console.log("[SPC] Running winrate === "+gRunningWinRate+"%");
+	console.log("[SPC] Running winrate > Skinhub winrate? "+((percentage > gRunningWinRate) ? 'NO' : 'YES'));
+	if (simplify(wins, (wins+losses)) != "NaN:NaN") {
+		console.log("[SPC] Win ratio === "+simplify(wins, gRunTarget));
+	}
 	console.log("[====================================]");
 }
 
@@ -106,6 +135,7 @@ function run_tests() {
 
 function doRuns(runTargetNumber) {
 	if (gSPCIsRunning) { console.log("[SPC] %calready running tests!", "color:red;"); return; }
+	SPC_showrunning();
 	gRunTarget = runTargetNumber;
 	gRunCount = 0;
 	gWins = 0;
@@ -117,9 +147,61 @@ function doRuns(runTargetNumber) {
 	run_tests();
 }
 
+function makeStatsDiv(title, value) {
+	var container = document.createElement("div");
+	container.className = "stat";
+	container.style.width = "auto";
+	container.style.fontSize = "28px"; 
+	var titleLabel = document.createElement("h5");
+	titleLabel.innerHTML = title;
+
+	var valueLabel = document.createElement("h3");
+	valueLabel.innerHTML = value;
+
+	container.appendChild(titleLabel);
+	container.appendChild(valueLabel);
+	return container;
+}
+
+function SPC_showrunning() {
+	// remove the SPC testing row
+	if (document.getElementsByClassName("row spcUpgradeMain")[0] != undefined) {
+		document.getElementsByClassName("row spcUpgradeMain")[0].remove();
+	}
+	// setup the SPC div 
+	var SPCRow = document.createElement("div");
+	SPCRow.className = "row spcUpgradeRunning";
+	SPCRow.style.height = "245px";
+	SPCRow.style.marginBottom = "50px";
+	// SPC Title
+	var title =  document.createElement("p");
+	title.className = "spcTitle";
+	title.innerHTML = "&#9752; SPC &#9752;";
+	// SPC Run Tests Title
+	var subtitle = document.createElement("p");
+	subtitle.className = "spcSmallTitle";
+	subtitle.innerHTML = "SPC is running!";
+	// styled seperator
+    var spcSeperator = document.createElement("hr");
+    spcSeperator.style.border = "0";
+    spcSeperator.style.height = "1px";
+    spcSeperator.style.backgroundImage = "linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0))";
+    // custom 'loader' spinner
+	var spinner = document.createElement("div");	
+	spinner.className = "loader";
+
+	SPCRow.appendChild(title);
+	SPCRow.appendChild(spcSeperator);
+	SPCRow.appendChild(subtitle);
+	SPCRow.appendChild(spinner);
+	document.getElementsByClassName("upgrade-body")[0].getElementsByClassName("row actions")[0].appendChild(SPCRow);
+}
+
 function SPC_showresults() {
 	// remove the SPC testing row
-	document.getElementsByClassName("row spcUpgradeMain")[0].remove();
+	if (document.getElementsByClassName("row spcUpgradeRunning")[0] != undefined) {
+		document.getElementsByClassName("row spcUpgradeRunning")[0].remove();
+	}
 	// re-setup essentially the same as makerow
 	var SPCRow = document.createElement("div");
 	SPCRow.className = "row spcUpgradeMainStats";
@@ -142,81 +224,13 @@ function SPC_showresults() {
 	var caseStats = document.createElement("div");
 	caseStats.className = "case-winning-stats";
 	caseStats.style.backgroundColor = "#6f7290";
-
-	// wins container
-	var statWins = document.createElement("div");
-	statWins.className = "stat";
-	statWins.style.width = "auto";
-	// title
-	var statBigLabelWins = document.createElement("h5");
-	statBigLabelWins.innerHTML = "Wins";
-	// value
-	var statSmallLabelWins = document.createElement("h3");
-	statSmallLabelWins.innerHTML = gWins;
-	// glue together stat
-	statWins.appendChild(statBigLabelWins);
-	statWins.appendChild(statSmallLabelWins);
-	caseStats.appendChild(statWins);
-
-	// losses container
-	var statLosses = document.createElement("div");
-	statLosses.className = "stat";
-	statLosses.style.width = "auto";
-	// title
-	var statBigLabelLosses = document.createElement("h5");
-	statBigLabelLosses.innerHTML = "Losses";
-	// value
-	var statSmallLabelLosses = document.createElement("h3");
-	statSmallLabelLosses.innerHTML = gLosses;
-	// glue together stat
-	statLosses.appendChild(statBigLabelLosses);
-	statLosses.appendChild(statSmallLabelLosses);
-	caseStats.appendChild(statLosses);
-
-	// winrate container
-	var statWinrate = document.createElement("div");
-	statWinrate.className = "stat";
-	statWinrate.style.width = "auto";
-	// title
-	var statBigLabelWinrate = document.createElement("h5");
-	statBigLabelWinrate.innerHTML = "Win rate";
-	// value
-	var statSmallLabelWinrate = document.createElement("h3");
-	statSmallLabelWinrate.innerHTML = ((gWins/(gWins+gLosses))*100).toFixed(0)+"%";
-	// glue together stat
-	statWinrate.appendChild(statBigLabelWinrate);
-	statWinrate.appendChild(statSmallLabelWinrate);
-	caseStats.appendChild(statWinrate);
-
-	// profit container
-	var statProfit = document.createElement("div");
-	statProfit.className = "stat";
-	statProfit.style.width = "auto";
-	// title
-	var statBigLabelProfit = document.createElement("h5");
-	statBigLabelProfit.innerHTML = "Profit";
-	// value
-	var statSmallLabelProfit = document.createElement("h3");
-	statSmallLabelProfit.innerHTML = "$"+gProfit.toFixed(0);
-	// glue together stat
-	statProfit.appendChild(statBigLabelProfit);
-	statProfit.appendChild(statSmallLabelProfit);
-	caseStats.appendChild(statProfit);
-
-	// spent container
-	var statSpent = document.createElement("div");
-	statSpent.className = "stat";
-	statSpent.style.width = "auto";
-	// title
-	var statBigLabelSpent = document.createElement("h5");
-	statBigLabelSpent.innerHTML = "Spent";
-	// value
-	var statSmallLabelSpent = document.createElement("h3");
-	statSmallLabelSpent.innerHTML = "$"+gSpent.toFixed(0);
-	// glue together stat
-	statSpent.appendChild(statBigLabelSpent);
-	statSpent.appendChild(statSmallLabelSpent);
-	caseStats.appendChild(statSpent);
+	
+	caseStats.appendChild(makeStatsDiv("Total", gWins+gLosses));	
+	caseStats.appendChild(makeStatsDiv("Wins", gWins));
+	caseStats.appendChild(makeStatsDiv("Losses", gLosses));
+	caseStats.appendChild(makeStatsDiv("Win rate", (((gWins/(gWins+gLosses))*100).toFixed(0)+"%")));
+	caseStats.appendChild(makeStatsDiv("Profit", ("$"+gProfit.toFixed(0))));
+	caseStats.appendChild(makeStatsDiv("Spent", ("$"+gSpent.toFixed(0))));
 
 	// reset SPC
 	var resetBtn = document.createElement("div");
@@ -244,6 +258,8 @@ function SPC_showresults() {
 	SPCRow.appendChild(document.createElement("br"));
 	SPCRow.appendChild(resetBtn);
 	document.getElementsByClassName("upgrade-body")[0].getElementsByClassName("row actions")[0].appendChild(SPCRow);
+
+	console.log("[SPC] Showing results!");
 }
 
 // Our initial SPC testing row
@@ -361,6 +377,7 @@ chrome.extension.sendMessage({}, function(response) {
 	var readyStateCheckInterval = setInterval(function() {
 	if (document.readyState === "complete") {
 		clearInterval(readyStateCheckInterval);
+		console.log("[SPC] BEGINNING UPGRADE TESTER INJECTION");
 		spc_welcome();
         setTimeout(function () {
             SPC_startup();

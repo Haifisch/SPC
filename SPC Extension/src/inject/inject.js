@@ -342,6 +342,7 @@ function doRuns(runTargetNumber) {
 
 // setup our UI sidebar 
 function setup_sidebar() {
+    console.log("[SPC] called "+setup_sidebar.name);
     var sidebar = document.getElementsByClassName("ember-view case-sidebar")[0]; // grab the sidebar
     sidebar.id = "case-sidebar";
     // remove the name bonus div to free up some vertical space
@@ -551,6 +552,7 @@ chrome.extension.sendMessage({}, function(response) {
 	var readyStateCheckInterval = setInterval(function() {
     	if (document.readyState === "complete") {
     		clearInterval(readyStateCheckInterval);
+            console.log("[SPC] BEGINNING CASE TESTER INJECTION");
     		spc_welcome();
             setTimeout(function () {
                 setup_sidebar();
